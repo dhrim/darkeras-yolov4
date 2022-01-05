@@ -85,13 +85,13 @@ def YOLOv3(input_layer):
 
     return [conv_sbbox, conv_mbbox, conv_lbbox]
 
-def decode(conv_output, i=0):
+def decode(conv_output, i=0, num_class=80):
     """
     return tensor of shape [batch_size, output_size, output_size, anchor_per_scale, 5 + num_classes]
             contains (x, y, w, h, score, probability)
     """
 
-    NUM_CLASS = 80
+    NUM_CLASS = num_class
     STRIDES = np.array([8, 16, 32])
     
     # anchors = np.array([10,13, 16,30, 33,23, 30,61, 62,45, 59,119, 116,90, 156,198, 373,326])
@@ -127,7 +127,7 @@ def decode(conv_output, i=0):
 
 INPUT_SIZE = 608
 
-def build_model(weight_file):
+def build_model(weight_file, num_class):
 
     input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
     feature_maps = YOLOv3(input_layer)
@@ -136,7 +136,7 @@ def build_model(weight_file):
 
     bbox_tensors = []
     for i, fm in enumerate(feature_maps):
-        bbox_tensor = decode(fm, i)
+        bbox_tensor = decode(fm, i, num_class)
         bbox_tensors.append(bbox_tensor)
     # Load Weights
     model = tf.keras.Model(input_layer, bbox_tensors)
@@ -164,8 +164,8 @@ def do_predict(model, original_image):
     return bboxes
 
 class YoloV3Wrapper():
-    def __init__(self, weight_file):
-        self.model = build_model(weight_file)
+    def __init__(self, weight_file, class_names):
+        self.model = build_model(weight_file, len(class_names))
         self.input_shape = (608, 608)
         self.INPUT_SIZE = INPUT_SIZE
 
