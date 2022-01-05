@@ -40,9 +40,7 @@ def darknet53(input_data):
 
     return route_1, route_2, input_data
 
-def YOLOv3(input_layer):
-    
-    NUM_CLASS = 80
+def YOLOv3(input_layer, num_class):
     
     route_1, route_2, conv = darknet53(input_layer)
 
@@ -53,7 +51,7 @@ def YOLOv3(input_layer):
     conv = common.convolutional(conv, (1, 1, 1024,  512))
 
     conv_lobj_branch = common.convolutional(conv, (3, 3, 512, 1024))
-    conv_lbbox = common.convolutional(conv_lobj_branch, (1, 1, 1024, 3*(NUM_CLASS + 5)), activate=False, bn=False)
+    conv_lbbox = common.convolutional(conv_lobj_branch, (1, 1, 1024, 3*(num_class + 5)), activate=False, bn=False)
 
     conv = common.convolutional(conv, (1, 1,  512,  256))
     conv = common.upsample(conv)
@@ -67,7 +65,7 @@ def YOLOv3(input_layer):
     conv = common.convolutional(conv, (1, 1, 512, 256))
 
     conv_mobj_branch = common.convolutional(conv, (3, 3, 256, 512))
-    conv_mbbox = common.convolutional(conv_mobj_branch, (1, 1, 512, 3*(NUM_CLASS + 5)), activate=False, bn=False)
+    conv_mbbox = common.convolutional(conv_mobj_branch, (1, 1, 512, 3*(num_class + 5)), activate=False, bn=False)
 
     conv = common.convolutional(conv, (1, 1, 256, 128))
     conv = common.upsample(conv)
@@ -81,7 +79,7 @@ def YOLOv3(input_layer):
     conv = common.convolutional(conv, (1, 1, 256, 128))
 
     conv_sobj_branch = common.convolutional(conv, (3, 3, 128, 256))
-    conv_sbbox = common.convolutional(conv_sobj_branch, (1, 1, 256, 3*(NUM_CLASS +5)), activate=False, bn=False)
+    conv_sbbox = common.convolutional(conv_sobj_branch, (1, 1, 256, 3*(num_class +5)), activate=False, bn=False)
 
     return [conv_sbbox, conv_mbbox, conv_lbbox]
 
@@ -91,7 +89,6 @@ def decode(conv_output, i=0, num_class=80):
             contains (x, y, w, h, score, probability)
     """
 
-    NUM_CLASS = num_class
     STRIDES = np.array([8, 16, 32])
     
     # anchors = np.array([10,13, 16,30, 33,23, 30,61, 62,45, 59,119, 116,90, 156,198, 373,326])
@@ -130,7 +127,7 @@ INPUT_SIZE = 608
 def build_model(weight_file, num_class):
 
     input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
-    feature_maps = YOLOv3(input_layer)
+    feature_maps = YOLOv3(input_layer, num_class)
 
     feature_maps_array = np.array(feature_maps)
 
