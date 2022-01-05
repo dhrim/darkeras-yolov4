@@ -1,3 +1,24 @@
+# Darkeras Wrapper
+
+LA Tran님의 https://github.com/tranleanh/darkeras-yolov4 을 가져와서
+사용하기 쉽게 가공한 것.
+
+다음의 코드로 사용 가능
+```
+import yolov3_wrapper
+model = yolov3_wrapper.YoloV3Wrapper("yolov3.weights") # darknet 포멧의 모델 파일 로딩
+image = ... # load image into numpy arrary
+bboxes = model.predict(image)
+```
+
+다음의 코드로 keras포멧으로 저장 가능
+```
+model.save("keras_model.h5")
+```
+
+<br>
+
+
 # Darkeras: Execute YOLOv3/YOLOv4 Object Detection on Keras with Darknet Pre-trained Weights
 
 This project is to execute YOLOv3/YOLOv4 object detector on Keras framework with Darknet pre-trained weights.
