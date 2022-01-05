@@ -123,28 +123,6 @@ def decode(conv_output, i=0, num_class=80):
     return tf.concat([pred_xywh, pred_conf, pred_prob], axis=-1)    
 
 INPUT_SIZE = 608
-yolov3_feature_maps = None # must be singleton
-
-def build_model(weight_file, num_class):
-
-    input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
-    global yolov3_feature_maps
-    if yolov3_feature_maps == None:
-        yolov3_feature_maps = YOLOv3(input_layer, num_class)
-    feature_maps = yolov3_feature_maps
-
-    feature_maps_array = np.array(feature_maps)
-
-    bbox_tensors = []
-    for i, fm in enumerate(feature_maps):
-        bbox_tensor = decode(fm, i, num_class)
-        bbox_tensors.append(bbox_tensor)
-    # Load Weights
-    model = tf.keras.Model(input_layer, bbox_tensors)
-    utils.load_weights(model, weight_file)
-    # model.summary()    
-
-    return model
 
 def do_predict(model, original_image):
 
@@ -165,6 +143,7 @@ def do_predict(model, original_image):
     return bboxes
 
 class YoloV3Wrapper():
+
     def __init__(self, weight_file, class_names):
         self.model = build_model(weight_file, len(class_names))
         self.input_shape = (608, 608)
@@ -175,3 +154,21 @@ class YoloV3Wrapper():
 
     def save(self, file_name):
         self.model.save(file_name)
+
+    def build_model(weight_file, num_class):
+
+        input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
+        feature_maps = YOLOv3(input_layer, num_class)
+
+        feature_maps_array = np.array(feature_maps)
+
+        bbox_tensors = []
+        for i, fm in enumerate(feature_maps):
+            bbox_tensor = decode(fm, i, num_class)
+            bbox_tensors.append(bbox_tensor)
+        # Load Weights
+        model = tf.keras.Model(input_layer, bbox_tensors)
+        utils.load_weights(model, weight_file)
+        # model.summary()    
+
+        return model
