@@ -123,11 +123,12 @@ def decode(conv_output, i=0, num_class=80):
     return tf.concat([pred_xywh, pred_conf, pred_prob], axis=-1)    
 
 INPUT_SIZE = 608
-
 yolov3_feature_maps = None # must be singleton
+
 def build_model(weight_file, num_class):
 
     input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
+    global yolov3_feature_maps
     if yolov3_feature_maps == None:
         yolov3_feature_maps = YOLOv3(input_layer, num_class)
     feature_maps = yolov3_feature_maps
