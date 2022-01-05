@@ -83,6 +83,25 @@ def YOLOv3(input_layer, num_class):
 
     return [conv_sbbox, conv_mbbox, conv_lbbox]
 
+
+def build_model(weight_file, num_class):
+
+    input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
+    feature_maps = YOLOv3(input_layer, num_class)
+
+    feature_maps_array = np.array(feature_maps)
+
+    bbox_tensors = []
+    for i, fm in enumerate(feature_maps):
+        bbox_tensor = decode(fm, i, num_class)
+        bbox_tensors.append(bbox_tensor)
+    # Load Weights
+    model = tf.keras.Model(input_layer, bbox_tensors)
+    utils.load_weights(model, weight_file)
+    # model.summary()    
+
+    return model
+
 def decode(conv_output, i=0, num_class=80):
     """
     return tensor of shape [batch_size, output_size, output_size, anchor_per_scale, 5 + num_classes]
@@ -154,21 +173,3 @@ class YoloV3Wrapper():
 
     def save(self, file_name):
         self.model.save(file_name)
-
-    def build_model(weight_file, num_class):
-
-        input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
-        feature_maps = YOLOv3(input_layer, num_class)
-
-        feature_maps_array = np.array(feature_maps)
-
-        bbox_tensors = []
-        for i, fm in enumerate(feature_maps):
-            bbox_tensor = decode(fm, i, num_class)
-            bbox_tensors.append(bbox_tensor)
-        # Load Weights
-        model = tf.keras.Model(input_layer, bbox_tensors)
-        utils.load_weights(model, weight_file)
-        # model.summary()    
-
-        return model
