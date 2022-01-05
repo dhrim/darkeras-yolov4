@@ -166,8 +166,8 @@ def do_predict(model, original_image):
 
 class YoloV3Wrapper():
 
-    def __init__(self, weight_file, class_names=["a"]*80):
-        self.model = build_model(weight_file, len(class_names))
+    def __init__(self, weight_file, class_num=80):
+        self.model = build_model(weight_file, class_num)
         self.input_shape = (608, 608)
         self.INPUT_SIZE = INPUT_SIZE
 
