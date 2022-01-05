@@ -99,7 +99,7 @@ def decode(conv_output, i=0, num_class=80):
     batch_size       = conv_shape[0]
     output_size      = conv_shape[1]
 
-    conv_output = tf.reshape(conv_output, (batch_size, output_size, output_size, 3, 5 + NUM_CLASS))
+    conv_output = tf.reshape(conv_output, (batch_size, output_size, output_size, 3, 5 + num_class))
 
     conv_raw_dxdy = conv_output[:, :, :, :, 0:2]
     conv_raw_dwdh = conv_output[:, :, :, :, 2:4]
