@@ -145,9 +145,15 @@ def build_model(weight_file):
 
     return model
 
-def do_predict(model, image_data):
+def do_predict(model, original_image):
 
-    pred_bbox = model.predict(image_data)
+    original_image_size = original_image.shape[:2]
+
+    image = cv2.resize(original_image, (INPUT_SIZE, INPUT_SIZE))
+    image = image/255.
+    image = image[np.newaxis, ...].astype(np.float32)
+
+    pred_bbox = model.predict(image)
     pred_bbox = [tf.reshape(x, (-1, tf.shape(x)[-1])) for x in pred_bbox]
     pred_bbox = tf.concat(pred_bbox, axis=0)
 
