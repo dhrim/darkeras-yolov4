@@ -86,6 +86,9 @@ def YOLOv3(input_layer, num_class):
 
 def build_model(weight_file, num_class):
 
+    from tensorflow.keras import backend as K
+    K.clear_session() # Keras가 layer 이름을 자동으로 주는데, reset하지 않으면 이름이 바귀어 오류난다.
+
     input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
     feature_maps = YOLOv3(input_layer, num_class)
 
