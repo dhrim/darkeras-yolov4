@@ -171,3 +171,6 @@ class YoloV3Wrapper():
 
     def predict(self, image_data):
         return do_predict(self.model, image_data)
+
+    def save(self, file_name):
+        self.model.save(file_name)
