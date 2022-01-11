@@ -101,6 +101,7 @@ def build_model(weight_file, num_class):
     # Load Weights
     model = tf.keras.Model(input_layer, bbox_tensors)
     utils.load_weights(model, weight_file)
+    model.trainable = False # 이걸 안해주면, predict() 호출 후에 weight가 변경된다.
     # model.summary()    
 
     return model
