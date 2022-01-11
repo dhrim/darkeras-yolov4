@@ -6,7 +6,7 @@ LA Tran님의 https://github.com/tranleanh/darkeras-yolov4 을 가져와서
 다음의 코드로 사용 가능
 ```
 import yolov3_wrapper
-model = yolov3_wrapper.YoloV3Wrapper("yolov3.weights") # darknet 포멧의 모델 파일 로딩
+model = yolov3_wrapper.YoloV3Wrapper("yolov3.weights", class_num=80) # darknet 포멧의 모델 파일 로딩
 image = ... # load image into numpy arrary
 bboxes = model.predict(image)
 ```
