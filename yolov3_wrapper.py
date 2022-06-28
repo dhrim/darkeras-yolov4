@@ -92,7 +92,7 @@ def build_model(weight_file, num_class):
     input_layer  = tf.keras.layers.Input([INPUT_SIZE, INPUT_SIZE, 3])
     feature_maps = YOLOv3(input_layer, num_class)
 
-    feature_maps_array = np.array(feature_maps)
+    # feature_maps_array = np.array(feature_maps)
 
     bbox_tensors = []
     for i, fm in enumerate(feature_maps):
