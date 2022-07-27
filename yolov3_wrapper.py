@@ -177,3 +177,6 @@ class YoloV3Wrapper():
 
     def save(self, file_name):
         self.model.save(file_name)
+        
+    def load(self, file_name):
+        self.model = tensorflow.keras.models.load_model(file_name)
